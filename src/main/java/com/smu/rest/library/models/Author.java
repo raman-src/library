@@ -1,9 +1,15 @@
 package com.smu.rest.library.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Author {
 
     @Id
@@ -12,7 +18,7 @@ public class Author {
     private String firstName;
     private String lastName;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author",cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<Book> books;
 
     public Author() {
