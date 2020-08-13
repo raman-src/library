@@ -7,9 +7,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Author {
 
     @Id
@@ -62,4 +59,5 @@ public class Author {
     public void setBooks(List<Book> books) {
         this.books = books;
     }
+
 }

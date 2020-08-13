@@ -1,39 +1,55 @@
 package com.smu.rest.library.api.controllers;
 
+import com.smu.rest.library.dtos.AuthorDTO;
+import com.smu.rest.library.dtos.BookDTO;
+import com.smu.rest.library.dtos.mappers.AuthorDTOMapper;
+import com.smu.rest.library.dtos.mappers.BookDTOMapper;
 import com.smu.rest.library.models.Author;
 import com.smu.rest.library.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/authors")
 public class AuthorController {
 
     @Autowired
     private AuthorRepository authorRepository;
 
-    @GetMapping("/authors")
-    public List<Author> getAllAuthors(){
-        return authorRepository.findAll();
+
+    @GetMapping
+    public List<AuthorDTO> getAllAuthors(){
+        List<Author> authors = authorRepository.findAll();
+
+        List<AuthorDTO> authorDTOS = AuthorDTOMapper.mapToList(authors);
+
+        return authorDTOS;
     }
 
-
-    @GetMapping("/authors/{id}")
-    public Author getAuthorById(@PathVariable("id") int id){
-        return authorRepository.findById(id).get();
-    }
-
-    @DeleteMapping("/authors/{id}")
-    public Author deleteAuthorById(@PathVariable("id") int id){
+    @GetMapping("/{id}")
+    public AuthorDTO getAuthorById(@PathVariable("id") int id){
         Author author = authorRepository.findById(id).get();
-        System.out.println(author.getFirstName());
-        authorRepository.deleteById(id);
-        return author;
+        AuthorDTO authorDTO = AuthorDTOMapper.mapToDTO(author);
+        return authorDTO;
     }
 
+    @DeleteMapping("/{id}")
+    public AuthorDTO deleteAuthorById(@PathVariable("id") int id){
+        Author author = authorRepository.findById(id).get();
+        authorRepository.deleteById(id);
+        return AuthorDTOMapper.mapToDTO(author);
+    }
 
+    @PostMapping
+    public void addAuthor(@RequestBody Author author){
+        authorRepository.save(author);
+    }
 
+    @PutMapping
+    public void updateAuthor(@RequestBody Author author){
+        authorRepository.save(author);
+    }
 }

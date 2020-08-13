@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class LibraryApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(LibraryApplication.class, args);
+       SpringApplication.run(LibraryApplication.class, args);
     }
 
 }
