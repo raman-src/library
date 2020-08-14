@@ -1,4 +1,4 @@
-## A small REST api for SMU project Report
+## A small REST api for SMU project report
 
 `localhost:8080/register/v1` to get the apiKey.
 
