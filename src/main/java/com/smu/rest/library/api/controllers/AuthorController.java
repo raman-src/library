@@ -1,16 +1,24 @@
 package com.smu.rest.library.api.controllers;
 
+import com.smu.rest.library.api.controllers.reponses.AuthorResponse;
+import com.smu.rest.library.api.controllers.reponses.ErrorResponse;
 import com.smu.rest.library.dtos.AuthorDTO;
-import com.smu.rest.library.dtos.BookDTO;
 import com.smu.rest.library.dtos.mappers.AuthorDTOMapper;
-import com.smu.rest.library.dtos.mappers.BookDTOMapper;
 import com.smu.rest.library.models.Author;
 import com.smu.rest.library.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/authors")
@@ -19,37 +27,63 @@ public class AuthorController {
     @Autowired
     private AuthorRepository authorRepository;
 
-
     @GetMapping
-    public List<AuthorDTO> getAllAuthors(){
+    public ResponseEntity<AuthorResponse> getAllAuthors() {
         List<Author> authors = authorRepository.findAll();
+        if (authors.isEmpty())
+            return new ResponseEntity<>(new AuthorResponse("not found",new ArrayList<AuthorDTO>(), null),HttpStatus.OK);
 
         List<AuthorDTO> authorDTOS = AuthorDTOMapper.mapToList(authors);
-
-        return authorDTOS;
+        return new ResponseEntity<>(new AuthorResponse("found", authorDTOS, null), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public AuthorDTO getAuthorById(@PathVariable("id") int id){
-        Author author = authorRepository.findById(id).get();
-        AuthorDTO authorDTO = AuthorDTOMapper.mapToDTO(author);
-        return authorDTO;
+    public ResponseEntity<AuthorResponse> getAuthorById(@PathVariable("id") int id) {
+        Optional<Author> author = authorRepository.findById(id);
+        AuthorDTO authorDTO;
+        if (author.isPresent()) {
+            authorDTO = AuthorDTOMapper.mapToDTO(author.get());
+            return new ResponseEntity<>(new AuthorResponse("found", null, authorDTO), HttpStatus.FOUND);
+        } else {
+            return new ResponseEntity<>(new AuthorResponse("not found", null, null), HttpStatus.NOT_FOUND);
+        }// end if-else
     }
 
     @DeleteMapping("/{id}")
-    public AuthorDTO deleteAuthorById(@PathVariable("id") int id){
-        Author author = authorRepository.findById(id).get();
+    public ResponseEntity<AuthorResponse> deleteAuthorById(@PathVariable("id") int id) {
+        Optional<Author> author = authorRepository.findById(id);
+
+        if(author.isEmpty())
+            return new ResponseEntity<>(new AuthorResponse("not found", null, null), HttpStatus.NOT_FOUND);
+
         authorRepository.deleteById(id);
-        return AuthorDTOMapper.mapToDTO(author);
+        AuthorDTO authorDTO = AuthorDTOMapper.mapToDTO(author.get());
+        AuthorResponse authorResponse = new AuthorResponse("deleted",null, authorDTO);
+        return new ResponseEntity<>(authorResponse,HttpStatus.OK);
     }
 
     @PostMapping
-    public void addAuthor(@RequestBody Author author){
+    public ResponseEntity<?> addAuthor(@RequestBody Author author) {
         authorRepository.save(author);
+        return new ResponseEntity<>("new Author added with id: "+ author.getId(), HttpStatus.OK);
     }
 
     @PutMapping
-    public void updateAuthor(@RequestBody Author author){
+    public ResponseEntity<AuthorResponse> updateAuthor(@RequestBody Author author) {
         authorRepository.save(author);
+        AuthorDTO authorDTO = AuthorDTOMapper.mapToDTO(author);
+        return new ResponseEntity<>(new AuthorResponse("successfully updated", null, authorDTO), HttpStatus.OK);
     }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> errorHandler(ConstraintViolationException ex){
+        Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+        List<String> messages = constraintViolations.stream().map(cv -> cv.getPropertyPath()+": "+ cv.getMessage()).collect(Collectors.toList());
+
+        ErrorResponse errorResponse = new ErrorResponse(messages);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
 }

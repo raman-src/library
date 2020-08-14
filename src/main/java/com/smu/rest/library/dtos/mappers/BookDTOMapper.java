@@ -1,10 +1,7 @@
 package com.smu.rest.library.dtos.mappers;
 
 import com.smu.rest.library.dtos.BookDTO;
-import com.smu.rest.library.models.Author;
 import com.smu.rest.library.models.Book;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

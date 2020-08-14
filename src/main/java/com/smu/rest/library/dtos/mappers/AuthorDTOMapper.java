@@ -1,11 +1,8 @@
 package com.smu.rest.library.dtos.mappers;
 
 import com.smu.rest.library.dtos.AuthorDTO;
-import com.smu.rest.library.dtos.BookDTO;
 import com.smu.rest.library.models.Author;
 import com.smu.rest.library.models.Book;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +23,8 @@ public class AuthorDTOMapper {
     }
 
     private static List<Integer> getBookIds(List<Book> books) {
+        if(books == null)
+            return List.of();
         return books.stream().map(b -> b.getId()).collect(Collectors.toList());
     }
 

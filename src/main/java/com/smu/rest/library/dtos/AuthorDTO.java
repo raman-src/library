@@ -1,7 +1,5 @@
 package com.smu.rest.library.dtos;
 
-import com.smu.rest.library.models.Book;
-
 import java.util.List;
 
 public class AuthorDTO {
