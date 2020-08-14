@@ -75,7 +75,7 @@ public class AuthorController {
         return new ResponseEntity<>(new AuthorResponse("successfully updated", null, authorDTO), HttpStatus.OK);
     }
 
-    @ExceptionHandler
+   /* @ExceptionHandler
     private ResponseEntity<ErrorResponse> errorHandler(ConstraintViolationException ex){
         Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
         List<String> messages = constraintViolations.stream().map(cv -> cv.getPropertyPath()+": "+ cv.getMessage()).collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class AuthorController {
         ErrorResponse errorResponse = new ErrorResponse(messages);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
+    }*/
 
 
 }
