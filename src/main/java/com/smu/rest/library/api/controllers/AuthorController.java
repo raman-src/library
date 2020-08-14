@@ -1,7 +1,6 @@
 package com.smu.rest.library.api.controllers;
 
 import com.smu.rest.library.api.controllers.reponses.AuthorResponse;
-import com.smu.rest.library.api.controllers.reponses.ErrorResponse;
 import com.smu.rest.library.dtos.AuthorDTO;
 import com.smu.rest.library.dtos.mappers.AuthorDTOMapper;
 import com.smu.rest.library.models.Author;
@@ -10,18 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/authors")
+@RequestMapping("/authors/v1")
 public class AuthorController {
 
     @Autowired
@@ -74,16 +67,6 @@ public class AuthorController {
         AuthorDTO authorDTO = AuthorDTOMapper.mapToDTO(author);
         return new ResponseEntity<>(new AuthorResponse("successfully updated", null, authorDTO), HttpStatus.OK);
     }
-
-   /* @ExceptionHandler
-    private ResponseEntity<ErrorResponse> errorHandler(ConstraintViolationException ex){
-        Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
-        List<String> messages = constraintViolations.stream().map(cv -> cv.getPropertyPath()+": "+ cv.getMessage()).collect(Collectors.toList());
-
-        ErrorResponse errorResponse = new ErrorResponse(messages);
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }*/
 
 
 }

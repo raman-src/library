@@ -1,11 +1,7 @@
 package com.smu.rest.library.api.controllers;
 
-import com.smu.rest.library.api.controllers.reponses.AuthorResponse;
 import com.smu.rest.library.api.controllers.reponses.BookResponse;
-import com.smu.rest.library.api.controllers.reponses.ErrorResponse;
-import com.smu.rest.library.dtos.AuthorDTO;
 import com.smu.rest.library.dtos.BookDTO;
-import com.smu.rest.library.dtos.mappers.AuthorDTOMapper;
 import com.smu.rest.library.dtos.mappers.BookDTOMapper;
 import com.smu.rest.library.models.Author;
 import com.smu.rest.library.models.Book;
@@ -16,16 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/books/v1")
 public class BookController {
 
     @Autowired
